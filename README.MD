@@ -37,6 +37,14 @@ The project includes an AutoHotkey script (`VolumeControl.ahk`) that enhances th
 - **Data Synchronization:** When volume keys (Up, Down, Mute) are pressed, the script intercepts the input, updates the system volume, and immediately sends the new state (volume level and mute status) to the local server via an asynchronous HTTP GET request to `http://127.0.0.1:8085/update`.
 - **iCue / Web Overlay Support:** The server receives this data and broadcasts it via Socket.io. This allows web-based overlays—such as an **XENEON EDGE Iframe** or a custom browser source to react in real-time to volume changes, enabling a fully customized and integrated volume UI.
 
+### Audio Device Monitoring (`SoundVolumeView.exe`)
+
+The server uses **SoundVolumeView.exe** to track the system's default playback device:
+
+- **Real-time Detection:** It polls every 3 seconds to detect if you have switched outputs (e.g., from Speakers to Headphones).
+- **Profile Management:** The server maintains separate volume and mute states for each device it detects.
+- **Auto-Switching:** When an Audeze Maxwell headset is detected, it automatically triggers battery status updates.
+
 ### Battery Retry Logic
 
 The server checks battery levels every **10 minutes**.
@@ -48,5 +56,6 @@ The server checks battery levels every **10 minutes**.
 
 - server.js: Main logic.
 - HeadsetControl.exe: Third-party tool used to query device data.
+- SoundVolumeView.exe: Third-party tool used to detect the current default playback device.
 - run-server.vbs: Script to launch the server silently or with a visible window.
 - server_logs.txt: Auto-generated log history.
