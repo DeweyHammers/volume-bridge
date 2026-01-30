@@ -224,7 +224,7 @@ function checkDevice() {
             console.log(`SWITCHED: ${memory.currentDev} -> ${prettyName}`);
             memory.currentDev = prettyName;
 
-            // --- NEW: Trigger Battery Check Immediately on Switch ---
+            // Trigger Battery Check Immediately on Switch
             if (
               prettyName.includes("Maxwell") ||
               prettyName.includes("Audeze")
@@ -234,10 +234,8 @@ function checkDevice() {
               );
               // calling checkBattery(0) here will hit the 'systemBusy' lock
               // inside checkBattery, causing it to retry in 1s.
-              // This is perfect, as it allows this function to finish cleaning up.
               checkBattery(0);
             }
-            // ------------------------------------------------------
 
             if (!memory.profiles[prettyName])
               memory.profiles[prettyName] = { vol: 50, mute: "Off" };
