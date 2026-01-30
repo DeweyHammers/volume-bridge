@@ -1,0 +1,18 @@
+{
+  "currentDev": "Logitech G560",
+  "battery": "71",
+  "profiles": {
+    "Detecting...": {
+      "vol": 0,
+      "mute": "Off"
+    },
+    "Logitech G560": {
+      "vol": "44",
+      "mute": "Off"
+    },
+    "Audeze Maxwell": {
+      "vol": "50",
+      "mute": "Off"
+    }
+  }
+}
