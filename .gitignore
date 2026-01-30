@@ -1,5 +1,8 @@
 # dependencies
 /node_modules
 
-#logs
+# logs
 /server_logs.txt
+
+# volume data
+/volume_data.json
