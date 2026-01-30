@@ -35,7 +35,7 @@ The project includes an AutoHotkey script (`VolumeControl.ahk`) that enhances th
 
 - **OSD Suppression:** It automatically detects and hides the default Windows Volume OSD (On-Screen Display) to provide a cleaner interface.
 - **Data Synchronization:** When volume keys (Up, Down, Mute) are pressed, the script intercepts the input, updates the system volume, and immediately sends the new state (volume level and mute status) to the local server via an asynchronous HTTP GET request to `http://127.0.0.1:8085/update`.
-- **iCue / Web Overlay Support:** The server receives this data and broadcasts it via Socket.io. This allows web-based overlays—such as an **XENEON EDGE Iframe** or a custom browser source to react in real-time to volume changes, enabling a fully customized and integrated volume UI.
+- **iCue / Web Overlay Support:** The server receives this data and broadcasts it via Socket.io. This allows web-based overlays, such as an **XENEON EDGE Iframe** or a custom browser source to react in real-time to volume changes, enabling a fully customized and integrated volume UI.
 
 ### Audio Device Monitoring (`SoundVolumeView.exe`)
 
