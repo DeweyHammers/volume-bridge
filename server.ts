@@ -1,14 +1,17 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { execFile } from "child_process";
+import { execFile, exec } from "child_process";
+import { promisify } from "util";
 import fs from "fs";
 import path from "path";
 import dayjs from "dayjs";
 
+require("dotenv").config();
+
 // --- LOGGING TO FILE SETUP ---
 const logFile = path.join(__dirname, "server_logs.txt");
-const logStream = fs.createWriteStream(logFile, { flags: "a" }); // 'a' means append
+const logStream = fs.createWriteStream(logFile, { flags: "a" });
 
 // Write a startup header with the date
 const startupHeader =
@@ -87,8 +90,29 @@ function saveToDisk() {
   }, 2000);
 }
 
-// --- 1. BATTERY CHECKER (With "Unavailable" Retry Logic) ---
-function checkBattery(retryCount = 0) {
+const execAsync = promisify(exec);
+
+/**
+ * Automates the "Open Audeze HQ -> Wait -> Close" loop
+ * to force the dongle to update the battery status.
+ */
+async function forceHeadsetRefresh(): Promise<void> {
+  try {
+    // We use 'start' so we don't wait for the process to exit naturally.
+    await execAsync(`start /MIN "" "${process.env.AUDEZE_HQ_PATH}"`);
+
+    // Force kill the Audeze HQ process.
+    await execAsync('taskkill /IM "Audeze.exe" /F');
+
+    // Short cooldown to let the handle release
+    await new Promise((resolve) => setTimeout(resolve, 20000));
+  } catch (error) {
+    console.error("Failed to cycle Audeze software:", error);
+  }
+}
+
+// --- BATTERY CHECKER (With "Unavailable" Retry Logic) ---
+async function checkBattery(retryCount = 0) {
   // Device Validation
   if (
     !memory.currentDev.includes("Maxwell") &&
@@ -97,7 +121,12 @@ function checkBattery(retryCount = 0) {
     return;
   }
 
-  if (retryCount === 0) console.log("CHECKING BATTERY...");
+  if (retryCount === 0) {
+    console.log("CHECKING BATTERY...");
+    await forceHeadsetRefresh();
+    execFile(HC_PATH, ["-b"]);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
 
   if (systemBusy) {
     console.log("System busy. Retrying Battery Check in 1s...");
@@ -155,7 +184,7 @@ function checkBattery(retryCount = 0) {
 // This starts a fresh check with retryCount = 0
 setInterval(checkBattery, 600000);
 
-// --- 2. HELPERS ---
+// --- HELPERS ---
 function cleanName(rawName: string) {
   if (!rawName || rawName.length < 2) return null;
   if (rawName.includes("Logitech G560")) return "Logitech G560";
@@ -176,7 +205,7 @@ function getCurrentState() {
   };
 }
 
-// --- 3. DEVICE WATCHER ---
+// --- DEVICE WATCHER ---
 function checkDevice() {
   if (systemBusy) return;
 

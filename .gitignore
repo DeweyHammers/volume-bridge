@@ -6,3 +6,6 @@
 
 # volume data
 /volume_data.json
+
+# local env files
+.env
