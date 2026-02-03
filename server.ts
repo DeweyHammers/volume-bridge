@@ -92,10 +92,7 @@ function saveToDisk() {
 
 const execAsync = promisify(exec);
 
-/**
- * Automates the "Open Audeze HQ -> Wait -> Close" loop
- * to force the dongle to update the battery status.
- */
+//Automates the "Open Audeze HQ -> Wait -> Close" loop to force the dongle to update the battery status.
 async function forceHeadsetRefresh(): Promise<void> {
   try {
     // We use 'start' so we don't wait for the process to exit naturally.
